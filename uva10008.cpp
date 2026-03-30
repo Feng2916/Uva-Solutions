@@ -1,42 +1,43 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
 using namespace std;
+typedef pair <char, int> pci;
+
+bool cmp (pci &a, pci &b) {
+    if (a.second != b.second) return a.second > b.second;
+    return a.first < b.first;
+}
 
 int main () {
-    ios_base::sync_with_stdio(0); cin.tie(0);
+    ios::sync_with_stdio(0); cin.tie(0);
+    //freopen ("in.txt", "r", stdin);
 
-    char c;
-    vector<char> alphabet;
-    vector<int> cnt;
+    int n;
+    cin >> n;
+    string s;
+    map <char, int> alpha;
 
-    while (cin >> c) {
-        if ((c - 'A' >= 0 && c - 'Z' <= 0) || (c - 'a' >= 0 && c - 'z' <= 0)) {
-            char cu = toupper(c);
-            bool check = 0;
-
-            for (int i = 0; i < alphabet.size(); ++i) {
-                if (alphabet[i] == cu) {
-                    ++cnt[i];
-                    check = 1;
-                    break;
-                }
-            }
-
-            if (!check) {
-                alphabet.push_back(cu);
-                cnt.push_back(1);
-            }
+    cin.ignore();
+    while (n--) {
+        // only alpha
+        // upper = lower
+        // desc count
+        // previous alpha
+        getline (cin, s);
+        for (auto ch: s) {
+            if (isalpha (ch))
+                ++alpha[toupper(ch)];
         }
     }
 
-    for (int i = 0; i < cnt.size(); ++i) {
-        int maxIndex = 0;
-        for (int j = 0; j < cnt.size(); ++j) {
-            if (cnt[j] > cnt[maxIndex]) maxIndex = j;
-            else if (cnt[j] == cnt[maxIndex]) {
-                if (alphabet[j] < alphabet[maxIndex]) maxIndex = j;
-            }
-        }
-        cout << alphabet[maxIndex] << ' ' << cnt[maxIndex] << '\n';
-        cnt[maxIndex] = 0;
-    }
+    // map -> vector for sorting
+    vector <pci> A;
+    for (auto it: alpha)
+        A.emplace_back(it.first, it.second);
+
+    sort (A.begin(), A.end(), cmp);
+    for (auto it: A)
+        cout << it.first << ' ' << it.second << '\n';
 }
